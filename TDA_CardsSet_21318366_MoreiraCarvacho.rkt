@@ -17,7 +17,7 @@
 ;recursividad: no aplica
 (define creando
   (lambda (elements e)
-    (cons (Firstcard elements e)(Firstsymbolo elements (- e 1)))))
+    (cons (Firstcard elements e) (armar_n_cartas e))))
 
 ;esta funcion sigue en construccion ya que será la principal para crea el cardset
 
@@ -38,29 +38,43 @@
 ;Dominio: Conjunto de elementos o simbolos(list ()) y un entero que representa la cantidad de elementos en cada carta(e)
 ;Recorrido: N cartas representadas en listas
 ;recursion; Natural
-(define (Firstsymbolo elements e)
-  (if (= e 0)
-      null
-      (cons (list(car elements)) (Firstsymbolo elements (- e 1)))))
+(define Firstsymbolo
+  (lambda (e)
+    (define calcular
+      (lambda (n j)
+        (if (> j n)
+            null
+            (cons (list 1) (calcular n (+ j 1))))))
+    (calcular (- e 1) 1)))
 
 
-;Funcion: Agrega los siguietnes simbolos a las cartas ya creadas segun las restricciones matematicas 
-;Dominio: El conjunto de elementos y un entero (e) que representa los simbolos por cada carta
-;Recorrido:  E cartas con la totalidad de simbolos
+;Funcion: Entregar los proximos simbolos para las n cartas siguientes despues de la primera 
+;Dominio: Un entero (e) que representa los simbolos por cada carta
+;Recorrido:  Simbolos para las n cartas siguientes
 ;recursion; Natural
-(define Nextscard
-  (lambda (elements e)
-    (define calcular1
-      (lambda (elements lista e i)
-        (if (= (length(car(reverse lista))) e)
-            lista
-            (if (member (car elements)(car lista))
-                (calcular1 (cdr elements) lista e i)
-                (if (= (length(car(cdr lista))) e)
-                    (calcular1 elements (cdr lista) e i)
-                    (if (= i e)
-                        (calcular1 elements lista e 0)
-                        ((append (car(cdr lista)) (list(car elements))) (calcular1 elements lista e (+ i 1)))))))))
-    (calcular1 elements (creando letras e) e 1)))
+(define n_cards
+  (lambda (e)
+    (define calcular
+      (lambda (n j k)
+        (if (> j n)
+            null
+            (if (< n k)
+                (calcular n (+ j 1) 1)
+                (cons (list(+(+ k 1)(* n j))) (calcular n j (+ k 1)))))))
+    (calcular (- e 1) 1 1)))
 
-;problema de recursividad, seguir revisandola
+;Funcion: Entregar las n cartas siguientes con todos sus simbolos 
+;Dominio: Un entero (e) que representa los simbolos por cada carta
+;Recorrido:  N cartas
+;recursion;cola
+(define armar_n_cartas
+  (lambda (e)
+    (define calcular
+      (lambda (e lista1 lista2 card)
+        (if (or (empty? lista1) (empty? lista2))
+                 card
+                 (if (= (length (car lista1)) e)
+                     (calcular e (cdr lista1) lista2 card)
+                     (calcular e (cons (append (car lista1) (car lista2)) (cdr lista1)) (cdr lista2) (list(append (car lista1) (car lista2))))))))
+    (calcular e (Firstsymbolo e) (n_cards e) (list))))
+;revisar recursion
