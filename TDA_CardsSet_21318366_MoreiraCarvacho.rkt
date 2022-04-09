@@ -15,10 +15,9 @@
 ;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta
 ;recorrido: Cardsset
 ;recursividad: no aplica
-(define creando
-  (lambda (elements e)
-    (cons (Firstcard elements e) (armar_n_cartas e))))
-
+(define setcard
+  (lambda (e)
+    (append (cons (Firstcard e)(Next_cards e 1)))))
 ;esta funcion sigue en construccion ya que será la principal para crea el cardset
 
 
@@ -26,55 +25,40 @@
 ; 1 hasta e
 ;Dominio: Conjunto de elementos o simbolos(list ()) y un entero que representa la cantidad de elementos en cada carta(e)
 ;Recorrido: Primera carta
-;recursion; Natural
-(define (Firstcard elements e)
-  (if(= e 0)
-     null
-     (if (empty? elements)
-         null
-         (cons(car elements) (Firstcard(cdr elements) (- e 1))))))
+;recursion; De cola
+(define Firstcard
+  (lambda (e)
+    (define calcular
+      (lambda (e i [L null])
+        (if (= e 0)
+            L
+            (calcular (- e 1) (+ i 1) (append L (list i))))))
+    (calcular e 1)))
 
-;Funcion: Corresponde a la siguiente parte del algoritmo, agrega el simbolo inical a las cartas [2 - e]
-;Dominio: Conjunto de elementos o simbolos(list ()) y un entero que representa la cantidad de elementos en cada carta(e)
+;Funcion: crea la siguiente carta, correspondiente a las N cartas siguientes despues de la primera
+;Dominio: entero que representa la cantidad de elementos en cada carta(e)
 ;Recorrido: N cartas representadas en listas
-;recursion; Natural
-(define Firstsymbolo
-  (lambda (e)
+;recursion; De cola
+(define A_card
+  (lambda (e j)
     (define calcular
-      (lambda (n j)
-        (if (> j n)
-            null
-            (cons (list 1) (calcular n (+ j 1))))))
-    (calcular (- e 1) 1)))
+      (lambda (n k j [L null])
+        (if (<= k n)
+            (calcular n (+ k 1) j (append L (list (+ (* n j) (+ 1 k)))))
+            (cons 1 L))))
+    (calcular (- e 1) 1 j)))
 
-
-;Funcion: Entregar los proximos simbolos para las n cartas siguientes despues de la primera 
-;Dominio: Un entero (e) que representa los simbolos por cada carta
+;Funcion: Es la siguiente parte la función para generar las N cartas
+;Dominio: Un entero (e) que representa los simbolos por cada carta y la función A_card
 ;Recorrido:  Simbolos para las n cartas siguientes
-;recursion; Natural
-(define n_cards
-  (lambda (e)
+;recursion; De cola
+(define Next_cards
+  (lambda (e j)
     (define calcular
-      (lambda (n j k)
-        (if (> j n)
-            null
-            (if (< n k)
-                (calcular n (+ j 1) 1)
-                (cons (list(+(+ k 1)(* n j))) (calcular n j (+ k 1)))))))
-    (calcular (- e 1) 1 1)))
+      (lambda (lista j)
+        (if (= j (- e 1))
+            lista
+            (calcular (append lista (list (A_card e (+ 1 j)))) (+ j 1)))))
+    (calcular (list(A_card e j)) j)))
 
-;Funcion: Entregar las n cartas siguientes con todos sus simbolos 
-;Dominio: Un entero (e) que representa los simbolos por cada carta
-;Recorrido:  N cartas
-;recursion;cola
-(define armar_n_cartas
-  (lambda (e)
-    (define calcular
-      (lambda (e lista1 lista2 card)
-        (if (or (empty? lista1) (empty? lista2))
-                 card
-                 (if (= (length (car lista1)) e)
-                     (calcular e (cdr lista1) lista2 card)
-                     (calcular e (cons (append (car lista1) (car lista2)) (cdr lista1)) (cdr lista2) (list(append (car lista1) (car lista2))))))))
-    (calcular e (Firstsymbolo e) (n_cards e) (list))))
-;revisar recursion
+
