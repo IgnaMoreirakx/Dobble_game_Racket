@@ -17,9 +17,7 @@
 ;recursividad: no aplica
 (define setcard
   (lambda (e)
-    (append (cons (Firstcard e)(Next_cards e 1)))))
-;esta funcion sigue en construccion ya que será la principal para crea el cardset
-
+    (append (cons (Firstcard e)(Next_cards e 1)) (Last_cards e 1 1))))
 
 ;Funcion: Armar la primera carta del set, la cual contiene los elementos
 ; 1 hasta e
@@ -62,3 +60,41 @@
     (calcular (list(A_card e j)) j)))
 
 
+;Funcion: generar las N**2 cartas siguientes
+;Dominio: Un entero (e) que representa los simbolos por cada carta
+;Recorrido:  La primera carta de las N**2
+;recursion; De cola
+(define NN_cards
+  (lambda (e i j)
+    (define calcular
+      (lambda (n i j k [L null])
+        (if (> k n)
+            (cons (+ i 1) L)
+            (calcular n i j (+ k 1) (append L (list (+ (+ (* n (- k 1)) n 2) (modulo (+ (*(- i 1) (- k 1)) (- j 1)) n))))))))
+    (calcular (- e 1) i j 1)))
+
+;Funcion: Generar las N**2 cartas siguietnes( es parte de la construcción)
+;Dominio: Un entero (e) que representa los simbolos por cada carta y la función NN_cards
+;Recorrido:  genera las N de las N**2 cartas
+;recursion; De cola
+(define Finally_cards
+  (lambda (e i j)
+    (define calcular
+      (lambda (lista i j)
+        (if (= j (- e 1))
+            lista
+            (calcular (append lista (list (NN_cards e i (+ j 1)))) i (+ j 1)))))
+    (calcular (list(NN_cards e i j)) i j)))
+
+;Funcion: Generar las N**2 cartas siguietnes( es parte de la construcción)
+;Dominio: Un entero (e) que representa los simbolos por cada carta y la funcion Finally_cards
+;Recorrido:  genera las N**2 cartas
+;recursion; De cola
+(define Last_cards
+  (lambda (e i j)
+    (define calcular
+      (lambda (lista i j)
+        (if (= i (- e 1))
+            lista
+            (calcular (append lista (Finally_cards e (+ i 1) j)) (+ i 1) j))))
+    (calcular (Finally_cards e i j) i j)))
