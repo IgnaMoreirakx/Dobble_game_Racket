@@ -16,15 +16,36 @@
 ;recorrido: Cardsset
 ;recursividad: Natural
 (define CardsSet
-  (lambda (e c elementos)
-          (define calcular
-            (lambda (e c lista)
-              (if (<= c -1)
-                  lista
-                  (if (= c 0)
-                      null
-                      (cons (car lista) (calcular e (- c 1) (cdr lista)))))))
-          (calcular e c (mazo e elementos))))
+  (lambda (e c elementos fn)
+    (define calcular
+      (lambda (e c lista)
+        (if (primo? (- e 1))
+            (if (<= c -1)
+                lista
+                (if (= c 0)
+                    null
+                    (cons (car lista) (calcular e (- c 1) (cdr lista)))))
+            null)))
+     (calcular e c (mazo e elementos))))
+
+
+;Fuunción: verifica si un numero es primo o no
+;Dominio: entero
+;recorrido: boolean
+;recursividad: de cola
+(define primo?
+  (lambda (x)
+    (define calcular
+      (lambda (x cont acum)
+        (if (and (>= x cont) (= (remainder x cont) 0))
+            (calcular x (+ cont 1) (+ acum 1))
+            (if (>= x cont)
+                (calcular x (+ cont 1) acum)
+                (if (= acum 2)
+                    #t
+                    #f)))))
+    (calcular x 1 0)))
+
 
 ;Fuunción: es la encargada de crear el mazo en su totalidad
 ;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta y un entero c que significa la cantidad de cartas a entregar
@@ -161,5 +182,36 @@
     (aplicar cartas i? elementos)))
 
 
+;Funcion: Encargadad de entregar la N-esíma carta
+;Dominio: CardsSet
+;Recorrido:  N-esíma carta
+;recursion; de cola
+(define nthCard
+  (lambda (lista i)
+    (if (> i (length lista))
+        null
+        (if (= 1 i)
+            (car lista)
+            (nthCard (cdr lista) (- i 1))))))
 
 
+;Funcion: Encargada de entregar la cantidad total de cartas apartir de una sola carta
+;Dominio: N-esíma carta
+;Recorrido:  Numero total de cartas (entero)
+;recursion: No aplica
+(define findTotalCards
+  (lambda (lista)
+    (if (null? lista)
+        null
+        (+ (* (- (length lista) 1) (- (length lista) 1)) (- (length lista) 1) 1))))
+
+
+;Funcion: Encargada de entregar la cantidad total de elementos para generar un setcard valido
+;Dominio: N-esíma carta
+;Recorrido:  Numero total de elementos (entero)
+;recursion: No aplica
+(define requiredElements
+  (lambda (lista)
+    (if (primo? (- (length lista) 1))
+        (+ (* (- (length lista) 1) (- (length lista) 1)) (- (length lista) 1) 1)
+        null)))
