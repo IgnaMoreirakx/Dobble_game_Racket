@@ -62,6 +62,19 @@
                     #t
                     #f)))))
     (calcular x 1 0)))
+
+;Fuunción: arma una lista desde 0 hasta n
+;Dominio: entero n
+;recorrido: lista
+;recursividad: natural
+(define listan (lambda (e)
+                (define calcular (lambda (e i)
+                  (if (= e 0)
+                      null
+                      (cons i (calcular (- e 1) (+ i 1))))))
+                (calcular e 1)))
+
+
 ;-------------------------------------------------------------
 
 (define comparar (lambda (lista)

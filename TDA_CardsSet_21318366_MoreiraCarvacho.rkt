@@ -131,9 +131,15 @@
 ;Recorrido:  boolean
 ;recursion; No aplica
 (define dobble? (lambda (lista)
-                  (if (null? lista)
-                      #f
-                      #t)))
+                  (define calcular (lambda (lista lista2)
+                                     (if (null? lista)
+                                         #f
+                                         (if (null? lista2)
+                                             #t
+                                             (if (comparar (car lista2))
+                                                 (calcular lista (cdr lista2))
+                                                 #f)))))
+                  (calcular lista lista)))
 
 ;Funcion: Contar la cantidad de cartas en el set
 ;Dominio: CardsSet
@@ -181,8 +187,12 @@
         (+ (* (- (length lista) 1) (- (length lista) 1)) (- (length lista) 1) 1)
         null)))
 
-
-
+;Funcion: Encargada de entregar las cartas que faltan para un set valido
+;Dominio: cardsSet incompleto
+;Recorrido:  cartas faltantes
+;recursion: No aplica
+(define missingCards (lambda (lista)
+                       (set-subtract (CardsSet (length (car lista)) -1 (listan (+ (* (- (length (car lista)) 1) (- (length (car lista)) 1)) (- (length (car lista)) 1) 1))  (randomFn 1)) lista)))
 
 
 
