@@ -2,7 +2,6 @@
 (provide (all-defined-out))
 
 
-
 ;Funcion: funcion para comparar los elementos de la lista con los numeros
 ;Dominio: 2 enteros, uno corresponde a los elementos de la lista y el otro un numero entero
 ;Recorrido:  boolean, t si son iguales, f si son distintos
@@ -63,20 +62,8 @@
                     #f)))))
     (calcular x 1 0)))
 
-;Fuunción: arma una lista desde 0 hasta n
-;Dominio: entero n
-;recorrido: lista
-;recursividad: natural
-(define listan (lambda (e)
-                (define calcular (lambda (e i)
-                  (if (= e 0)
-                      null
-                      (cons i (calcular (- e 1) (+ i 1))))))
-                (calcular e 1)))
-
 
 ;-------------------------------------------------------------
-
 (define comparar (lambda (lista)
                    (define aux (lambda (lista lista2)
                                  (if (or (= (length lista) 1) (null? lista))
@@ -87,7 +74,8 @@
                                          #f
                                          (aux lista (cdr lista2)))))))
                    (aux lista (cdr lista))))
-;---------------------------------------------------------
+
+;----------------------------funcion random del documento-----------------------------
 (define m 2147483647)
 (define a 1103515245)
 (define c 12345)
@@ -95,3 +83,52 @@
                    (modulo (+ (* a xn) c) m)
                  )
 )
+;------------------------------------------------------------------------------
+
+;Fuunción: compara si hay nombres repetidos en una lista
+;Dominio: game
+;recorrido: boolean
+;recursividad: de cola
+(define compararname (lambda (jugador lista)
+                       (if (null? lista)
+                           #t
+                           (if (member jugador (car lista))
+                               #f
+                               (compararname jugador (cdr lista))))))
+
+
+;Fuunción: calcula el maximo de los scores
+;Dominio: scores
+;recorrido: int
+;recursividad: de cola
+(define maximo (lambda (lista)
+                 (define calcular (lambda (lista i)
+                                    (if (null? lista)
+                                        i
+                                        (if (> i (car lista))
+                                            (calcular (cdr lista) i)
+                                            (calcular (cdr lista) (car lista))))))
+                 (calcular lista (car lista))))
+
+
+;Fuunción: encuentra un elemento en una lista y lo reemplaza por otro elemento2
+;Dominio: lista X elemento X elemento2
+;recorrido: lista con el nuevo elemento
+;recursividad: No aplica
+(define buscar (lambda (lista elemento elemento2)
+                 (if (equal? (car lista) elemento)
+                     (cons elemento2 (cdr lista))
+                     (cons (car lista) (buscar (cdr lista) elemento elemento2)))))
+
+;Fuunción: Devuelve todo la informacion de un usuario solo con saber su nombre
+;Dominio: jugadores X jugador
+;recorrido: jugador
+;recursividad: de cola
+(define jugadorlista (lambda (lista jugador)
+                       (if (null? lista)
+                           #f
+                           (if (member jugador (car lista))
+                               (car lista)
+                               (jugadorlista (cdr lista) jugador)))))
+
+

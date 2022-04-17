@@ -6,11 +6,17 @@
 ;se busca abarcar el crear un mazo valido de dobble con "cartas"
 ;conociendo las restricciones matematicas de dobble
 ;------------------Constructor-------------
-;en esta seccion se buscar crear un mazo valido
-;para esto se intenta traducir el algoritmo dejado en el documento
-;al lenguaje scheme
-;es por esto que habrá varias funciones que pertenecerán
-;a la función final "CardsSet" (la idea es al final poder encapsular todas las funciones
+;representacion: para este tda la representacion sera (elementos X cartas)
+;Fuunción: es la encargada de encapsular todo el proceso de la creacion del cardsset
+;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta y un entero c que significa la cantidad de cartas a entregar
+;recorrido: Cardsset
+;recursividad: Natural
+(define CardsSet (lambda ( e c elementos fn)
+                   (if (not(comparar elementos))
+                       null
+                       (if (odd? fn)
+                           (cons elementos (shuffle (Finallyset e c elementos)))
+                           (cons elementos (shuffle (shuffle (Finallyset e c elementos))))))))
 
 ;Fuunción: es la encargada de encapsular todo el proceso de la creacion del cardsset
 ;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta y un entero c que significa la cantidad de cartas a entregar
@@ -28,14 +34,6 @@
                     (cons (car lista) (calcular e (- c 1) (cdr lista)))))
             null)))
      (calcular e c (mazo e elementos))))
-
-;esta función irá en el main
-(define CardsSet (lambda ( e c elementos fn)
-                   (if (not(comparar elementos))
-                       null
-                       (if (odd? fn)
-                           (shuffle (Finallyset e c elementos))
-                           (shuffle (shuffle (Finallyset e c elementos)))))))
 
 ;Fuunción: es la encargada de crear el mazo en su totalidad
 ;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta y un entero c que significa la cantidad de cartas a entregar
@@ -150,21 +148,22 @@
                                  (if (null? lista)
                                      cont
                                      (aux (cdr lista) (+ 1 cont)))))
-                   (aux lista 0)))
+                   (aux (cdr lista) 0)))
 
 
 ;Funcion: Encargadad de entregar la N-esíma carta
 ;Dominio: CardsSet
 ;Recorrido:  N-esíma carta
 ;recursion; de cola
-(define nthCard
-  (lambda (lista i)
-    (if (> i (length lista))
-        null
-        (if (= 1 i)
-            (car lista)
-            (nthCard (cdr lista) (- i 1))))))
-
+(define nthCard (lambda (cardsSet i)
+                  (define aux 
+                  (lambda (lista i)
+                    (if (>= i (length lista))
+                        null
+                        (if (= 0 i)
+                            (car lista)
+                            (aux (cdr lista) (- i 1))))))
+                  (aux (cdr cardsSet) i)))
 
 ;Funcion: Encargada de entregar la cantidad total de cartas apartir de una sola carta
 ;Dominio: N-esíma carta
@@ -183,7 +182,7 @@
 ;recursion: No aplica
 (define requiredElements
   (lambda (lista)
-    (if (primo? (- (length lista) 1))
+    (if (or (primo? (- (length lista) 1)) (= (- (length lista) 1) 1))
         (+ (* (- (length lista) 1) (- (length lista) 1)) (- (length lista) 1) 1)
         null)))
 
@@ -191,9 +190,10 @@
 ;Dominio: cardsSet incompleto
 ;Recorrido:  cartas faltantes
 ;recursion: No aplica
-(define missingCards (lambda (lista)
-                       (set-subtract (CardsSet (length (car lista)) -1 (listan (+ (* (- (length (car lista)) 1) (- (length (car lista)) 1)) (- (length (car lista)) 1) 1))  (randomFn 1)) lista)))
-
+(define missingCards2 (lambda (cardset)
+                       (define aux (lambda (lista)
+                                     (set-subtract (CardsSet (length (car lista)) -1 (car cardset) (randomFn 1)) cardset)))
+                       (aux (cdr cardset))))
 
 
 
