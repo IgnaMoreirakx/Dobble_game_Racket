@@ -1,5 +1,6 @@
 #lang racket
 (require "TDA_usuario_21318366_MoreiraCarvacho.rkt")
+(require "TDA_CardsSet_21318366_MoreiraCarvacho.rkt")
 (require "funciones_auxiliares.rkt")
 ;representacion: jugadores X numjugadores X mazo X modo X estado X random
 ;Fuunción: Crear un tipo de dato Game
@@ -7,7 +8,7 @@
 ;recorrido: Game
 ;recursividad: No aplica
 (define game (lambda (numj mazo modo fn)
-               (cons (list) (cons numj (cons mazo (cons modo(cons "iniciado" (cons fn null))))))))
+               (cons (list) (cons numj (cons (cdr mazo) (cons modo(cons "iniciado" (cons fn null))))))))
 
 ;---------------------selectores-----------------------
 
@@ -57,7 +58,7 @@
 ;recorrido: estado de juego
 ;recursividad: No aplica
 (define getEstado (lambda (game)
-                    (car(cdr (reverse game)))))
+                    (car(cdr (cdr (cdr (cdr game)))))))
 ;-----------------------------------------
 
 ;representación: una lista donde las ultimas 2 cartas son las que los jugadores ven y corresponde al area de juego, que asu vez es una sublista y las demás cartas estan en otra lista que corresponde al mazo
@@ -68,9 +69,9 @@
 (define StackMode (lambda (lista)
                    (define calcular (lambda (mazo area)
                                        (if (= (length area) 2)
-                                           (append (list mazo) area)
+                                           (cons (delay mazo) area)
                                            (calcular (cdr mazo) (cons (car mazo) area)))))
-                    (calcular lista (list))))
+                    (calcular (cdr lista) (list))))
 
 ;------------------Modificador-------------------------
 ;Fuunción: registra a los jugadores
@@ -137,7 +138,7 @@
 ;recursividad: no aplica
 (define finish (lambda (lista)
                  (if (not (null? (empate lista)))
-                     (cons (buscar lista "iniciado" "finalizado") (empate lista))
+                     (append (buscar lista "iniciado" "finalizado") (empate lista))
                      (append (buscar lista "iniciado" "finalizado") (ganador lista)))))
 
 ;Fuunción: determina el ganador
@@ -187,5 +188,6 @@
                 (if(null? (getUsers game))
                    null
                    (getScore (jugadorlista (getUsers game) jugador)))))
-
-                         
+;--------------------------------------------------------------------------
+(provide (all-defined-out))
+;---------------------------------------------------------------------------                      

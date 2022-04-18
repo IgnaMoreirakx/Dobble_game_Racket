@@ -28,7 +28,9 @@
 ;recorrido: Score del usuario
 ;recursividad: No aplica
 (define getScore (lambda (usuario)
-                   (car (reverse usuario))))
+                   (if (or (null? usuario) (equal? usuario #f))
+                      null
+                      (car (reverse usuario)))))
 ;-----------------Modificadores---------------------------
 ;Fuunción: Modificar el turno de un usuario
 ;Dominio: Usuario

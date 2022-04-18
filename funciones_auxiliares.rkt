@@ -70,7 +70,7 @@
                                      #t
                                      (if (null? lista2)
                                          (aux (cdr lista) (cdr (cdr lista)))
-                                     (if (= (car lista) (car lista2))
+                                     (if (eq? (car lista) (car lista2))
                                          #f
                                          (aux lista (cdr lista2)))))))
                    (aux lista (cdr lista))))

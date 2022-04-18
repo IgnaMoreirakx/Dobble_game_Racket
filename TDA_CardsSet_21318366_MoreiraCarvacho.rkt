@@ -1,4 +1,5 @@
 #lang racket
+(provide (all-defined-out))
 (define Simbolos (list 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24))
 (define letras (list "a" "b" "c" "d" "e" "f" "g" "h"))
 (require "funciones_auxiliares.rkt")
@@ -190,11 +191,20 @@
 ;Dominio: cardsSet incompleto
 ;Recorrido:  cartas faltantes
 ;recursion: No aplica
-(define missingCards2 (lambda (cardset)
+(define missingCards (lambda (cardset)
                        (define aux (lambda (lista)
                                      (set-subtract (CardsSet (length (car lista)) -1 (car cardset) (randomFn 1)) cardset)))
                        (aux (cdr cardset))))
 
 
-
+;Funcion: Encargada de transformar el cardsset en un string
+;Dominio: cardsSet 
+;Recorrido: cardsset
+;recursion: de cola
+(define cardsSet->string (lambda (lista)
+                           (define calcular (lambda (str lista i)
+                             (if (null? lista)
+                                 str
+                                 (calcular (string-append str (string-append "\nCarta " (number->string i) ": " (string-join (map ~a (car lista)) " "))) (cdr lista) (+ i 1)))))
+                           (calcular "" (cdr lista) 1)))
 
