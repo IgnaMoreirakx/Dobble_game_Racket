@@ -64,6 +64,10 @@
 
 
 ;-------------------------------------------------------------
+;Fuunción: compara si se repite un elemento de una lista
+;Dominio: lista
+;recorrido: boolean
+;recursividad: de cola
 (define comparar (lambda (lista)
                    (define aux (lambda (lista lista2)
                                  (if (or (= (length lista) 1) (null? lista))

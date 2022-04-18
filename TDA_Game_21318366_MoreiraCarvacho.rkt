@@ -2,7 +2,8 @@
 (require "TDA_usuario_21318366_MoreiraCarvacho.rkt")
 (require "TDA_CardsSet_21318366_MoreiraCarvacho.rkt")
 (require "funciones_auxiliares.rkt")
-;representacion: jugadores X numjugadores X mazo X modo X estado X random
+;representacion de este TDA: jugadores X numjugadores X mazo X modo X estado X random
+
 ;Fuunción: Crear un tipo de dato Game
 ;Dominio: Numbjugadores X mazo X modo X random
 ;recorrido: Game
