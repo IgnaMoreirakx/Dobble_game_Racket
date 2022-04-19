@@ -48,6 +48,12 @@
 (define string2 (cardsSet->string cardset2))
 (define string3 (cardsSet->string cardset3))
 
+
+;addCard
+(define addcard1 (addCard cardset2  (list "b" "e" "g")))
+(define addcard2 (addCard cardset1  (list 1 2 3))) ;como el cardSet esta completo no se agrega la carta
+(define addcard3 (addCard cardset3  (list "b" "e" "g"))) ;como el cardset y la carta que se quieren agregar no tienen el mismo tipo de simbolo no se agrega la carta
+
 ;--------------Se pasa al tda usuario-----------
 (define jugador1 (usuario "juan" #f 0))        ;se crean jugadores
 (define jugador2 (usuario "francisca" #f 0))

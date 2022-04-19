@@ -135,4 +135,30 @@
                                (car lista)
                                (jugadorlista (cdr lista) jugador)))))
 
+;Fuunción: junta sublistas en una lista
+;Dominio: lista de listas
+;recorrido: lista
+;recursividad: Natural
+(define juntar (lambda (lista)
+                 (if (null? lista)
+                     null
+                     (append (car lista) (juntar (cdr lista))))))
+
+
+;Fuunción: verifica si un par de cartas tienen mas de 1 elemento en comun
+;Dominio: carta X numero de elementoss por carta
+;recorrido: boolean
+;recursividad: De cola
+(define serepite? (lambda (lista e)
+                   (define aux (lambda (lista lista2 i)
+                                 (if (or (= (length lista) 1) (null? lista))
+                                     #f
+                                     (if (null? lista2)
+                                         (aux (cdr lista) (cdr (cdr lista)) 0)
+                                         (if (> i e)
+                                             #t
+                                             (if (equal? (car lista) (car lista2))
+                                                 (aux lista (cdr lista2) (+ i 1))
+                                                 (aux lista (cdr lista2) i)))))))
+                   (aux lista (cdr lista) 0)))
 

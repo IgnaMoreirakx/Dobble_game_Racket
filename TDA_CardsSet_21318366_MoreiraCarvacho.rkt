@@ -7,7 +7,7 @@
 ;se busca abarcar el crear un mazo valido de dobble con "cartas"
 ;conociendo las restricciones matematicas de dobble
 ;------------------Constructor-------------
-;representacion: para este tda la representacion sera (elementos X cartas)
+;REPRESENTACIÓN DE ESTE TDA: UN LISTA DONDE SIEMPRE LA PRIMERA SUBLISTA ES LA LISTA DE ELEMENTOS Y LUEGO LAS CARTAS; EJEMPLO: (LISTA CARTA1 CARTA2 CARTA3......)
 ;Fuunción: es la encargada de encapsular todo el proceso de la creacion del cardsset
 ;Dominio: Lista de elementos o simbolos y un entero (e) que significa la cantidad de simbolos por carta y un entero c que significa la cantidad de cartas a entregar
 ;recorrido: Cardsset
@@ -133,11 +133,13 @@
                   (define calcular (lambda (lista lista2)
                                      (if (null? lista)
                                          #f
-                                         (if (null? lista2)
-                                             #t
-                                             (if (comparar (car lista2))
-                                                 (calcular lista (cdr lista2))
-                                                 #f)))))
+                                         (if (serepite? (juntar lista) (length (car (reverse lista))))
+                                             #f
+                                             (if (null? lista2)
+                                                 #t
+                                                 (if (comparar (car lista2))
+                                                     (calcular lista (cdr lista2))
+                                                     #f))))))
                   (calcular lista lista)))
 
 ;Funcion: Contar la cantidad de cartas en el set
@@ -208,3 +210,19 @@
                                  (calcular (string-append str (string-append "\nCarta " (number->string i) ": " (string-join (map ~a (car lista)) " "))) (cdr lista) (+ i 1)))))
                            (calcular "" (cdr lista) 1)))
 
+;Funcion: Encargada de agregar manualmente una carta
+;Dominio: cardsSet 
+;Recorrido: cardsset
+;recursion: No aplica
+(define addCard (lambda (lista carta)
+                  (if (null? lista)
+                      (append lista carta)
+                      (if (not (dobble? lista))
+                          lista
+                          (if (not (member (car carta) (juntar lista)))
+                              lista
+                              (if (= (- (length lista) 1) (+ (* (- (length (car (reverse lista))) 1) (- (length (car (reverse lista))) 1)) (- (length (car (reverse lista))) 1) 1))
+                                  lista
+                                  (if (serepite? (juntar (append lista (list carta))) (length (car (reverse lista))))
+                                      lista
+                                      (append lista (list carta)))))))))
